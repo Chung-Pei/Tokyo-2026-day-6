@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>親子東京鐵塔一日遊</title>
+  <meta name="description" content="親子東京鐵塔一日遊：芝公園賞櫻、淺草仲見世、御徒町多慶屋" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="親子東京遊" />
+  <meta name="format-detection" content="telephone=no" />
+  <link rel="apple-touch-icon" href="icons/icon-180.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
+  <link rel="apple-touch-startup-image" href="icons/splash.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
+  <meta name="theme-color" content="#f7e8ef" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Zen+Old+Mincho:wght@700;900&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#fdf6f9; --bg2:#fef0f5; --white:#ffffff;
+      --ink:#3a2535; --ink2:#6b4c5e; --muted:#9e7d8f;
+      --sakura:#e8829e; --sakura-l:#f5c4d2; --sakura-ll:#fde8ef;
+      --petal:#fad5e0; --green:#5aab6a; --blue:#5b8fc4; --gold:#c8924a;
+      --border:rgba(232,130,158,0.18);
+      --safe-top:env(safe-area-inset-top,0px);
+      --safe-bot:env(safe-area-inset-bottom,0px);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'M PLUS Rounded 1c','Noto Serif TC',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+
+    /* COVER */
+    #cover{background:linear-gradient(160deg,#4a1942 0%,#7b2d5e 45%,#c0526a 100%);position:relative;overflow:hidden;padding:calc(var(--safe-top) + 2.4rem) 1.8rem 2.4rem;display:flex;flex-direction:column;align-items:center;text-align:center;}
+    .petal{position:absolute;border-radius:50% 0 50% 0;background:rgba(255,200,215,0.18);pointer-events:none;}
+    .p1{width:60px;height:60px;top:8%;left:6%;transform:rotate(20deg);}
+    .p2{width:40px;height:40px;top:18%;right:10%;transform:rotate(-30deg);opacity:.13;}
+    .p3{width:80px;height:80px;bottom:12%;left:2%;transform:rotate(50deg);opacity:.10;}
+    .p4{width:30px;height:30px;top:40%;right:4%;transform:rotate(10deg);opacity:.15;}
+    .p5{width:50px;height:50px;bottom:5%;right:8%;transform:rotate(-15deg);opacity:.12;}
+    .cover-art{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+    .cover-inner{position:relative;z-index:2;}
+    .cover-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:.3rem 1rem;font-size:.8rem;color:rgba(255,255,255,.85);letter-spacing:.1em;margin-bottom:1rem;}
+    .cover-title{font-family:'Zen Old Mincho',serif;font-weight:900;font-size:clamp(2rem,11vw,3.6rem);color:#fff;line-height:1.25;text-shadow:0 2px 20px rgba(0,0,0,.25);}
+    .cover-title em{color:var(--sakura-l);font-style:normal;}
+    .cover-sub{font-size:.78rem;color:rgba(255,255,255,.5);letter-spacing:.13em;margin-top:.6rem;}
+    .cover-chips{margin-top:1.4rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;}
+    .chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:100px;padding:.32rem .9rem;font-size:.82rem;color:rgba(255,255,255,.82);}
+
+    /* TAB BAR */
+    #tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bot);}
+    .tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:.18rem;padding:.65rem .2rem .5rem;background:none;border:none;cursor:pointer;color:var(--muted);font-family:inherit;font-size:.78rem;letter-spacing:.04em;transition:color .2s;}
+    .tab-btn .ti{font-size:1.4rem;line-height:1;}
+    .tab-btn.active{color:var(--sakura);}
+
+    /* PAGES */
+    .page{display:none;min-height:calc(100vh - 56px);padding:1.6rem 1.2rem calc(var(--safe-bot) + 80px);max-width:600px;margin:0 auto;}
+    .page.active{display:block;}
+    .page-title{font-family:'Zen Old Mincho',serif;font-weight:900;font-size:1.7rem;color:var(--ink);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;}
+    .page-title::after{content:'';flex:1;height:2px;background:linear-gradient(to right,var(--sakura-l),transparent);border-radius:2px;margin-left:.4rem;}
+    .sdiv{width:36px;height:3px;background:linear-gradient(to right,var(--sakura),var(--sakura-l));border-radius:3px;margin-bottom:1.4rem;}
+
+    /* TIMELINE */
+    .timeline{position:relative;padding-bottom:1rem;}
+    .timeline::before{content:'';position:absolute;left:3.4rem;top:.8rem;bottom:0;width:2px;background:linear-gradient(to bottom,var(--sakura-l),var(--sakura) 50%,var(--sakura-l));border-radius:2px;}
+    .tl-item{display:grid;grid-template-columns:3.8rem 1fr;gap:0 1.4rem;margin-bottom:1.2rem;position:relative;}
+    .tl-time{font-size:.76rem;color:var(--muted);text-align:right;padding-top:.85rem;line-height:1.4;font-weight:500;}
+    .tl-dot{position:absolute;left:calc(3.8rem + .7rem - .45rem);top:.9rem;width:.9rem;height:.9rem;border-radius:50%;background:var(--white);border:2.5px solid var(--sakura-l);z-index:1;}
+    .tl-dot.hi{background:var(--sakura);border-color:var(--sakura);}
+    .tl-dot.go{background:var(--blue);border-color:var(--blue);}
+    .tl-card{background:var(--white);border-radius:14px;padding:1rem 1.1rem;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(200,100,130,.07);}
+    .tl-head{display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.35rem;}
+    .tl-emoji{font-size:1.2rem;flex-shrink:0;line-height:1.3;}
+    .tl-name{font-weight:700;font-size:1rem;color:var(--ink);line-height:1.35;}
+    .tl-note{font-size:.87rem;color:var(--ink2);line-height:1.7;margin-top:.3rem;}
+    .tags{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem;}
+    .tag{border-radius:6px;padding:.18rem .55rem;font-size:.76rem;font-weight:600;background:var(--sakura-ll);color:var(--sakura);}
+    .tag.blue{background:rgba(91,143,196,.12);color:var(--blue);}
+    .tag.green{background:rgba(90,171,106,.12);color:var(--green);}
+    .tag.gold{background:rgba(200,146,74,.12);color:var(--gold);}
+    .tag.plain{background:var(--bg2);color:var(--muted);}
+
+    /* ROUTE */
+    .route-list{display:flex;flex-direction:column;gap:.9rem;}
+    .route-card{background:var(--white);border-radius:14px;padding:1.1rem 1.2rem;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(200,100,130,.06);}
+    .route-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;}
+    .route-num{width:1.9rem;height:1.9rem;background:linear-gradient(135deg,var(--sakura),#c0526a);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+    .route-title{font-weight:700;font-size:1rem;color:var(--ink);}
+    .route-sub{font-size:.82rem;color:var(--muted);margin-top:.1rem;}
+    .route-flow{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;margin-bottom:.7rem;}
+    .route-stop{background:var(--bg2);border-radius:8px;padding:.28rem .65rem;font-size:.83rem;white-space:nowrap;color:var(--ink2);font-weight:500;}
+    .route-arr{color:var(--sakura);font-size:.85rem;}
+    .route-meta{display:flex;flex-wrap:wrap;gap:.5rem;}
+    .route-badge{font-size:.8rem;color:var(--muted);background:var(--bg);border-radius:8px;padding:.22rem .65rem;}
+    .ic-tip{background:linear-gradient(135deg,var(--sakura-ll),#fde8ef);border:1.5px solid var(--sakura-l);border-radius:14px;padding:1rem 1.1rem;display:flex;gap:.7rem;align-items:flex-start;margin-top:.5rem;}
+    .ic-tip-icon{font-size:1.5rem;flex-shrink:0;}
+    .ic-tip-title{font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:.25rem;}
+    .ic-tip-body{font-size:.85rem;color:var(--ink2);line-height:1.65;}
+
+    /* COST */
+    .cost-note{font-size:.87rem;color:var(--muted);margin-bottom:1.2rem;background:var(--sakura-ll);border-radius:10px;padding:.75rem 1rem;}
+    .cost-card{background:var(--white);border-radius:14px;overflow:hidden;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(200,100,130,.06);margin-bottom:1rem;}
+    .cost-head{background:linear-gradient(135deg,var(--sakura),#c0526a);color:#fff;padding:.7rem 1.1rem;font-size:.95rem;font-weight:700;letter-spacing:.04em;}
+    .cost-row{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);}
+    .cost-row:last-child{border-bottom:none;}
+    .cost-label{font-size:.9rem;color:var(--ink);font-weight:500;}
+    .cost-sub{font-size:.78rem;color:var(--muted);margin-top:.1rem;}
+    .cost-amt{font-weight:700;font-size:.92rem;color:var(--ink);white-space:nowrap;}
+    .cost-amt.free{color:var(--green);}
+    .cost-total{background:linear-gradient(135deg,var(--sakura-ll),var(--petal));display:flex;justify-content:space-between;align-items:center;padding:1.1rem;border-top:2px solid var(--sakura-l);}
+    .cost-total-label{font-size:.92rem;font-weight:700;color:var(--ink);}
+    .cost-total-sub{font-size:.78rem;color:var(--muted);margin-top:.15rem;}
+    .cost-total-amt{font-size:1.2rem;font-weight:900;color:var(--sakura);}
+
+    /* TIPS */
+    .tips-list{display:flex;flex-direction:column;gap:.9rem;}
+    .tip-card{background:var(--white);border-radius:14px;padding:1.05rem 1.1rem;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(200,100,130,.06);display:flex;gap:.85rem;align-items:flex-start;border-left-width:4px;}
+    .tip-card.warn{border-left-color:var(--gold);}
+    .tip-card.alert{border-left-color:var(--sakura);}
+    .tip-card.info{border-left-color:var(--blue);}
+    .tip-card.good{border-left-color:var(--green);}
+    .tip-icon{font-size:1.5rem;flex-shrink:0;line-height:1.2;}
+    .tip-title{font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:.28rem;}
+    .tip-body{font-size:.86rem;color:var(--ink2);line-height:1.7;}
+
+    /* FOOTER */
+    footer{text-align:center;padding:1.5rem 1rem .5rem;font-size:.82rem;color:var(--muted);}
+    footer .fs{font-size:1.1rem;display:block;margin-bottom:.4rem;}
+
+    /* 5-tab adjustment */
+    .tab-btn{font-size:.68rem;}
+    .tab-btn .ti{font-size:1.2rem;}
+
+    /* RAIN PAGE */
+    .rain-switcher{display:flex;gap:.6rem;margin-bottom:1.3rem;}
+    .rain-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:.15rem;padding:.65rem .5rem;border-radius:12px;border:2px solid var(--border);background:var(--white);cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:700;color:var(--muted);transition:all .2s;}
+    .rain-tab-sub{font-size:.68rem;font-weight:400;color:var(--muted);}
+    .rain-tab.active{background:linear-gradient(135deg,var(--sakura-ll),var(--petal));border-color:var(--sakura-l);color:var(--ink);}
+    .rain-plan{display:none;}
+    .rain-plan.active{display:block;}
+    .rain-banner{display:flex;gap:.8rem;align-items:flex-start;border-radius:14px;padding:1.1rem;margin-bottom:1.1rem;}
+    .rain-banner-a{background:linear-gradient(135deg,#e8f4fd,#d0e8f8);border:1.5px solid #b0d4f0;}
+    .rain-banner-b{background:linear-gradient(135deg,#eae8fd,#d4d0f8);border:1.5px solid #b8b0f0;}
+    .rain-banner-icon{font-size:1.8rem;flex-shrink:0;}
+    .rain-banner-title{font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:.25rem;}
+    .rain-banner-desc{font-size:.83rem;color:var(--ink2);line-height:1.6;}
+    .rain-section-label{font-size:.78rem;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin:.9rem 0 .5rem;}
+    .rain-keep-card{background:var(--white);border-radius:12px;border:1.5px solid var(--border);overflow:hidden;margin-bottom:1rem;}
+    .rain-keep-row{display:flex;gap:.6rem;align-items:flex-start;padding:.7rem 1rem;border-bottom:1px solid var(--border);font-size:.87rem;color:var(--ink2);}
+    .rain-keep-row:last-child{border-bottom:none;}
+    .rain-keep-row.change{background:var(--sakura-ll);color:var(--ink);}
+    .rain-tip{background:linear-gradient(135deg,#fffbe8,#fef6d0);border:1.5px solid #f0e0a0;border-radius:12px;padding:.9rem 1rem;display:flex;gap:.6rem;font-size:.84rem;color:#6b5a2a;line-height:1.6;margin-top:.9rem;margin-bottom:1.2rem;}
+    .rain-compare{background:var(--white);border-radius:14px;border:1.5px solid var(--border);overflow:hidden;margin-top:1.4rem;}
+    .rain-compare-title{background:linear-gradient(135deg,var(--sakura),#c0526a);color:#fff;padding:.7rem 1.1rem;font-size:.92rem;font-weight:700;}
+    .rain-compare-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+    .rain-compare-row:last-child{border-bottom:none;}
+    .rain-compare-row span{padding:.7rem .8rem;font-size:.82rem;color:var(--ink2);}
+    .rain-compare-row span:first-child{color:var(--muted);font-size:.78rem;background:var(--bg);}
+    .rain-compare-head span{font-weight:700;color:var(--ink);font-size:.83rem;background:var(--sakura-ll);}
+    .rain-compare-head span:first-child{background:var(--bg2);}
+  </style>
+</head>
+<body>
+
+<!-- COVER -->
+<div id="cover">
+  <div class="petal p1"></div><div class="petal p2"></div>
+  <div class="petal p3"></div><div class="petal p4"></div><div class="petal p5"></div>
+  <div class="cover-art">
+    <!-- Tokyo Tower -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 340" style="position:absolute;bottom:0;left:-4%;width:38%;opacity:0.13;" preserveAspectRatio="xMidYMax meet">
+      <g fill="white">
+        <polygon points="100,4 120,4 148,336 72,336"/>
+        <polygon points="88,4 100,4 78,336 46,336" opacity=".7"/>
+        <polygon points="120,4 132,4 174,336 150,336" opacity=".7"/>
+        <rect x="72" y="200" width="76" height="16" rx="2" opacity=".95"/>
+        <rect x="82" y="152" width="56" height="13" rx="2" opacity=".95"/>
+        <rect x="107" y="0" width="6" height="36" rx="1" opacity=".9"/>
+        <line x1="83" y1="82" x2="137" y2="82" stroke="white" stroke-width="3.5" opacity=".5"/>
+        <line x1="79" y1="124" x2="141" y2="124" stroke="white" stroke-width="3" opacity=".45"/>
+        <line x1="74" y1="174" x2="146" y2="174" stroke="white" stroke-width="3" opacity=".4"/>
+        <line x1="68" y1="248" x2="152" y2="248" stroke="white" stroke-width="2.5" opacity=".35"/>
+        <line x1="62" y1="292" x2="158" y2="292" stroke="white" stroke-width="2" opacity=".3"/>
+        <line x1="89" y1="62" x2="131" y2="124" stroke="white" stroke-width="1.5" opacity=".3"/>
+        <line x1="131" y1="62" x2="89" y2="124" stroke="white" stroke-width="1.5" opacity=".3"/>
+        <line x1="84" y1="128" x2="136" y2="174" stroke="white" stroke-width="1.5" opacity=".25"/>
+        <line x1="136" y1="128" x2="84" y2="174" stroke="white" stroke-width="1.5" opacity=".25"/>
+      </g>
+    </svg>
+    <!-- Kaminarimon -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 280" style="position:absolute;bottom:0;right:-2%;width:46%;opacity:0.12;" preserveAspectRatio="xMidYMax meet">
+      <g fill="white">
+        <rect x="24" y="248" width="272" height="10" rx="2"/>
+        <rect x="42" y="96" width="34" height="156" rx="2"/>
+        <rect x="244" y="96" width="34" height="156" rx="2"/>
+        <rect x="134" y="132" width="20" height="120" rx="2"/>
+        <rect x="166" y="132" width="20" height="120" rx="2"/>
+        <polygon points="14,92 160,28 306,92 298,108 160,48 22,108" opacity=".9"/>
+        <rect x="18" y="103" width="284" height="9" rx="2" opacity=".8"/>
+        <polygon points="36,132 160,96 284,132 276,146 160,114 44,146" opacity=".85"/>
+        <rect x="40" y="141" width="240" height="7" rx="2" opacity=".75"/>
+        <path d="M18,108 Q4,100 10,90" stroke="white" stroke-width="3.5" fill="none" opacity=".6"/>
+        <path d="M302,108 Q316,100 310,90" stroke="white" stroke-width="3.5" fill="none" opacity=".6"/>
+        <ellipse cx="160" cy="182" rx="20" ry="30" opacity=".9"/>
+        <rect x="155" y="152" width="10" height="7" rx="1" opacity=".8"/>
+        <rect x="155" y="210" width="10" height="18" rx="1" opacity=".8"/>
+        <ellipse cx="160" cy="166" rx="20" ry="4.5" opacity=".45"/>
+        <ellipse cx="160" cy="198" rx="20" ry="4.5" opacity=".45"/>
+        <rect x="36" y="129" width="248" height="7" rx="2" opacity=".55"/>
+        <circle cx="66" cy="76" r="7" opacity=".32"/><circle cx="58" cy="68" r="5.5" opacity=".26"/><circle cx="74" cy="68" r="5.5" opacity=".26"/>
+        <circle cx="254" cy="76" r="7" opacity=".32"/><circle cx="246" cy="68" r="5.5" opacity=".26"/><circle cx="262" cy="68" r="5.5" opacity=".26"/>
+      </g>
+    </svg>
+    <!-- Sakura branch top -->
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80" style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:80%;opacity:0.11;" preserveAspectRatio="xMidYMin meet">
+      <g fill="none" stroke="white" stroke-width="2">
+        <path d="M150,5 Q120,25 80,40 Q60,48 30,45"/>
+        <path d="M150,5 Q175,22 210,35 Q235,44 265,40"/>
+        <path d="M110,22 Q100,32 90,28"/>
+        <path d="M190,18 Q198,30 210,26"/>
+      </g>
+      <g fill="white" opacity=".7">
+        <circle cx="30" cy="45" r="5"/><circle cx="25" cy="40" r="3.5"/><circle cx="35" cy="40" r="3.5"/>
+        <circle cx="265" cy="40" r="5"/><circle cx="260" cy="35" r="3.5"/><circle cx="270" cy="35" r="3.5"/>
+        <circle cx="90" cy="28" r="4"/><circle cx="210" cy="26" r="4"/>
+      </g>
+    </svg>
+  </div>
+  <div class="cover-inner">
+    <div class="cover-badge">🌸 親子旅遊手冊 · 2025 春</div>
+    <h1 class="cover-title">親子<em>東京鐵塔</em><br/>一日遊</h1>
+    <p class="cover-sub">TOKYO TOWER · SHIBA PARK · ASAKUSA · OKACHIMACHI</p>
+    <div class="cover-chips">
+      <span class="chip">🏨 淺草橋出發</span>
+      <span class="chip">👨‍👩‍👧 2大1寶寶</span>
+      <span class="chip">🌸 賞櫻路線</span>
+      <span class="chip">🍼 嬰兒車全程友善</span>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- PAGE: 行程 -->
+  <div class="page active" id="page-itinerary">
+    <h2 class="page-title">🗓 行程總覽</h2>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-time">08:30<br/>出發</div>
+        <div class="tl-dot hi"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🏨</span><div class="tl-name">Route-Inn Grand Tokyo Asakusabashi</div></div>
+          <p class="tl-note">從飯店步行或搭計程車前往水天宮，約 20 分鐘。建議早餐在飯店解決後出發。</p>
+          <div class="tags"><span class="tag plain">淺草橋</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">08:50<br/>–09:15</div>
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">⛩️</span><div class="tl-name">水天宮</div></div>
+          <p class="tl-note">子育て・安產守護神社，清靜莊嚴。早晨人少，嬰兒車可全程進入，一家人一起祈福。</p>
+          <div class="tags"><span class="tag gold">約 25 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">09:15<br/>–09:50</div>
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🏮</span><div class="tl-name">人形町・甘酒橫丁</div></div>
+          <p class="tl-note">江戶風情老街，嚐甘酒、鯛魚燒、人形燒等傳統點心。街道平坦，嬰兒車極友善。</p>
+          <div class="tags"><span class="tag gold">約 35 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">09:50<br/>–10:15</div>
+        <div class="tl-dot go"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🚃</span><div class="tl-name">搭都營地鐵 → 東京鐵塔</div></div>
+          <p class="tl-note">人形町站（都營淺草線）→ 大門站換乘大江戶線 → 赤羽橋站，步行約 5 分鐘至鐵塔。</p>
+          <div class="tags"><span class="tag blue">約 25 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">10:15<br/>–11:15</div>
+        <div class="tl-dot hi"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🗼</span><div class="tl-name">東京鐵塔 Main Deck</div></div>
+          <p class="tl-note">150m 觀景台，電梯全程可用，嬰兒車可寄放入口。2 歲孩子視覺震撼大，建議預先線上購票。</p>
+          <div class="tags"><span class="tag">重點景點 🌟</span><span class="tag plain">成人 ¥1,200</span><span class="tag green">嬰兒免費</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">11:15<br/>–13:05</div>
+        <div class="tl-dot hi"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🌸</span><div class="tl-name">芝公園賞櫻</div></div>
+          <p class="tl-note">東京最美賞櫻場景：滿開櫻花搭配紅色鐵塔背景。草地開闊，讓寶寶盡情奔跑玩耍。孩子疲累可在此補眠。</p>
+          <div class="tags"><span class="tag">賞櫻核心 🌸</span><span class="tag gold">約 110 分</span><span class="tag green">免費入園</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">13:05<br/>–14:00</div>
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🍱</span><div class="tl-name">東京鐵塔周邊午餐</div></div>
+          <p class="tl-note">可選 FootTown 3F 餐廳（景觀佳）或附近定食店。FootTown 內設有哺乳室與換尿布台。</p>
+          <div class="tags"><span class="tag green">哺乳室 ✓</span><span class="tag green">換尿布 ✓</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">14:00<br/>–14:35</div>
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🛍️</span><div class="tl-name">東京鐵塔商場 FootTown</div></div>
+          <p class="tl-note">室內冷氣空間，可採購紀念品、Tokyo Banana 等伴手禮。孩子補眠中可趁此時間輪流購物。</p>
+          <div class="tags"><span class="tag blue">室內休息</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">14:35<br/>–15:10</div>
+        <div class="tl-dot go"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🚃</span><div class="tl-name">搭都營地鐵 → 淺草</div></div>
+          <p class="tl-note">赤羽橋站 → 大門站 → 淺草站（都營淺草線），全程約 25 分鐘。各站均有電梯。</p>
+          <div class="tags"><span class="tag blue">約 25 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">15:10<br/>–16:20</div>
+        <div class="tl-dot hi"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🏮</span><div class="tl-name">仲見世・雷門（淺草）</div></div>
+          <p class="tl-note">傍晚人潮稍退，紅燈籠點燈氣氛絕佳。仲見世全長 250m，伴手禮豐富。雷門前拍照必排！</p>
+          <div class="tags"><span class="tag">必去 🏮</span><span class="tag gold">約 70 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">16:20<br/>–16:30</div>
+        <div class="tl-dot go"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🚃</span><div class="tl-name">搭地鐵 → 御徒町</div></div>
+          <p class="tl-note">淺草站（銀座線）→ 上野廣小路站，步行至多慶屋約 5 分鐘。</p>
+          <div class="tags"><span class="tag blue">約 10 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">16:30<br/>–18:00</div>
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🛒</span><div class="tl-name">多慶屋（御徒町）</div></div>
+          <p class="tl-note">日本超大型折扣百貨，藥妝、食品、玩具應有盡有。各樓層有電梯，嬰兒車全程可用。</p>
+          <div class="tags"><span class="tag gold">約 90 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">18:00<br/>–19:30</div>
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🍽️</span><div class="tl-name">御徒町・上野周邊晚餐</div></div>
+          <p class="tl-note">居酒屋、拉麵、迴轉壽司、家庭餐廳皆有，可依孩子狀況選擇輕鬆用餐環境。</p>
+          <div class="tags"><span class="tag gold">約 90 分</span></div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-time">19:30<br/>→ 20:30</div>
+        <div class="tl-dot hi"></div>
+        <div class="tl-card">
+          <div class="tl-head"><span class="tl-emoji">🏨</span><div class="tl-name">Candeo Hotels Ueno Koen</div></div>
+          <p class="tl-note">步行約 10–15 分或計程車 5 分鐘抵達。鄰近上野公園，隔日可繼續探索。</p>
+          <div class="tags"><span class="tag">抵達入住 🎉</span></div>
+        </div>
+      </div>
+    </div>
+    <footer><span class="fs">🌸🌸🌸</span>親子東京鐵塔一日遊行程手冊<br/><span style="opacity:.55;">Route-Inn Asakusabashi → Candeo Hotels Ueno Koen</span></footer>
+  </div>
+
+  <!-- PAGE: 交通 -->
+  <div class="page" id="page-transport">
+    <h2 class="page-title">🚃 交通路線</h2>
+    <div class="sdiv"></div>
+    <div class="route-list">
+
+      <div class="route-card">
+        <div class="route-header"><div class="route-num">1</div><div><div class="route-title">淺草橋 → 水天宮</div><div class="route-sub">步行 / 計程車</div></div></div>
+        <div class="route-flow"><span class="route-stop">🏨 淺草橋飯店</span><span class="route-arr">→</span><span class="route-stop">🚶 步行 20 分</span><span class="route-arr">→</span><span class="route-stop">⛩️ 水天宮</span></div>
+        <div class="route-meta"><span class="route-badge">⏱ 約 20 分鐘</span><span class="route-badge">💴 免費 / 計程車 ¥800</span><span class="route-badge">🍼 嬰兒車 OK</span></div>
+      </div>
+
+      <div class="route-card">
+        <div class="route-header"><div class="route-num">2</div><div><div class="route-title">人形町 → 東京鐵塔</div><div class="route-sub">都營淺草線 + 大江戶線</div></div></div>
+        <div class="route-flow"><span class="route-stop">🚉 人形町站</span><span class="route-arr">→</span><span class="route-stop">大門站 換乘</span><span class="route-arr">→</span><span class="route-stop">赤羽橋站</span><span class="route-arr">→</span><span class="route-stop">🗼 步行 5 分</span></div>
+        <div class="route-meta"><span class="route-badge">⏱ 約 25 分鐘</span><span class="route-badge">💴 約 ¥220 / 人</span><span class="route-badge">🛗 各站有電梯</span></div>
+      </div>
+
+      <div class="route-card">
+        <div class="route-header"><div class="route-num">3</div><div><div class="route-title">東京鐵塔 → 淺草</div><div class="route-sub">都營大江戶線 + 淺草線</div></div></div>
+        <div class="route-flow"><span class="route-stop">🚉 赤羽橋站</span><span class="route-arr">→</span><span class="route-stop">大門站 換乘</span><span class="route-arr">→</span><span class="route-stop">🏮 淺草站</span></div>
+        <div class="route-meta"><span class="route-badge">⏱ 約 25 分鐘</span><span class="route-badge">💴 約 ¥220 / 人</span><span class="route-badge">🛗 各站有電梯</span></div>
+      </div>
+
+      <div class="route-card">
+        <div class="route-header"><div class="route-num">4</div><div><div class="route-title">淺草 → 御徒町</div><div class="route-sub">東京地鐵銀座線</div></div></div>
+        <div class="route-flow"><span class="route-stop">🚉 淺草站（銀座線）</span><span class="route-arr">→</span><span class="route-stop">上野廣小路站</span><span class="route-arr">→</span><span class="route-stop">🛒 多慶屋 5 分</span></div>
+        <div class="route-meta"><span class="route-badge">⏱ 約 10 分鐘</span><span class="route-badge">💴 約 ¥180 / 人</span></div>
+      </div>
+
+      <div class="route-card">
+        <div class="route-header"><div class="route-num">5</div><div><div class="route-title">御徒町 → Candeo Hotels</div><div class="route-sub">步行 / 計程車</div></div></div>
+        <div class="route-flow"><span class="route-stop">🛒 多慶屋</span><span class="route-arr">→</span><span class="route-stop">🚶 步行 10–15 分</span><span class="route-arr">→</span><span class="route-stop">🏨 Candeo Hotels</span></div>
+        <div class="route-meta"><span class="route-badge">⏱ 約 15 分鐘</span><span class="route-badge">💴 免費 / 計程車 ¥700</span></div>
+      </div>
+
+      <div class="ic-tip">
+        <span class="ic-tip-icon">💡</span>
+        <div><div class="ic-tip-title">IC 卡小提醒</div><div class="ic-tip-body">建議使用 Suica 或 PASMO 感應乘車，免找零、閘門進出更順暢。Apple Pay / Google Pay 均可綁定。<br/>2 歲寶寶搭電車全程免費，無需購票。</div></div>
+      </div>
+    </div>
+    <footer style="margin-top:1.5rem;"><span class="fs">🌸</span><span style="opacity:.55;">本手冊由 Claude AI 協助規劃製作</span></footer>
+  </div>
+
+  <!-- PAGE: 費用 -->
+  <div class="page" id="page-cost">
+    <h2 class="page-title">💴 費用估算</h2>
+    <div class="sdiv"></div>
+    <p class="cost-note">🧾 以下為 2 大人 1 嬰兒（2歲半）估算，實際費用依選擇而異。</p>
+
+    <div class="cost-card">
+      <div class="cost-head">🎫 門票・入場費</div>
+      <div class="cost-row"><div><div class="cost-label">東京鐵塔 Main Deck（成人 × 2）</div><div class="cost-sub">建議官網預購，可省排隊時間</div></div><span class="cost-amt">¥2,400</span></div>
+      <div class="cost-row"><div><div class="cost-label">東京鐵塔（嬰兒）</div></div><span class="cost-amt free">免費</span></div>
+      <div class="cost-row"><div><div class="cost-label">芝公園入場</div></div><span class="cost-amt free">免費</span></div>
+      <div class="cost-row"><div><div class="cost-label">水天宮・仲見世</div></div><span class="cost-amt free">免費</span></div>
+    </div>
+
+    <div class="cost-card">
+      <div class="cost-head">🚃 交通費</div>
+      <div class="cost-row"><div><div class="cost-label">人形町 → 赤羽橋（成人 × 2）</div></div><span class="cost-amt">¥440</span></div>
+      <div class="cost-row"><div><div class="cost-label">赤羽橋 → 淺草（成人 × 2）</div></div><span class="cost-amt">¥440</span></div>
+      <div class="cost-row"><div><div class="cost-label">淺草 → 上野廣小路（成人 × 2）</div></div><span class="cost-amt">¥360</span></div>
+      <div class="cost-row"><div><div class="cost-label">嬰兒電車費</div><div class="cost-sub">6 歲以下全程免費</div></div><span class="cost-amt free">免費</span></div>
+      <div class="cost-row"><div><div class="cost-label">計程車（視需要）</div><div class="cost-sub">出發 / 晚間回飯店備用</div></div><span class="cost-amt">¥0–1,500</span></div>
+    </div>
+
+    <div class="cost-card">
+      <div class="cost-head">🍱 餐飲費</div>
+      <div class="cost-row"><div><div class="cost-label">早點（甘酒橫丁點心）</div></div><span class="cost-amt">¥500–800</span></div>
+      <div class="cost-row"><div><div class="cost-label">午餐（2 大人）</div><div class="cost-sub">FootTown 或附近定食</div></div><span class="cost-amt">¥2,000–3,000</span></div>
+      <div class="cost-row"><div><div class="cost-label">晚餐（2 大人）</div><div class="cost-sub">上野周邊</div></div><span class="cost-amt">¥2,000–4,000</span></div>
+      <div class="cost-row"><div><div class="cost-label">飲料・零食・嬰兒餐</div></div><span class="cost-amt">¥500–1,000</span></div>
+    </div>
+
+    <div class="cost-card">
+      <div class="cost-head">🛍️ 購物（備用預算）</div>
+      <div class="cost-row"><div><div class="cost-label">仲見世伴手禮</div></div><span class="cost-amt">¥1,000–3,000</span></div>
+      <div class="cost-row"><div><div class="cost-label">FootTown 紀念品</div></div><span class="cost-amt">¥500–2,000</span></div>
+      <div class="cost-row"><div><div class="cost-label">多慶屋藥妝・日用品</div></div><span class="cost-amt">視需求</span></div>
+    </div>
+
+    <div class="cost-total">
+      <div><div class="cost-total-label">全日預估總支出</div><div class="cost-total-sub">2 大人 1 嬰兒（不含購物）</div></div>
+      <span class="cost-total-amt">¥8,640–13,540</span>
+    </div>
+    <footer style="margin-top:1.5rem;"><span class="fs">🌸</span><span style="opacity:.55;">匯率依出行當日為準</span></footer>
+  </div>
+
+  <!-- PAGE: 提醒 -->
+  <div class="page" id="page-tips">
+    <h2 class="page-title">📋 行前提醒</h2>
+    <div class="sdiv"></div>
+    <div class="tips-list">
+
+      <div class="tip-card alert">
+        <span class="tip-icon">🎫</span>
+        <div><div class="tip-title">東京鐵塔建議預購門票</div><div class="tip-body">賞櫻旺季排隊可長達 1 小時以上，強烈建議至東京鐵塔官網提前購買 Main Deck 門票，節省等待時間，讓孩子輕鬆遊覽。</div></div>
+      </div>
+
+      <div class="tip-card info">
+        <span class="tip-icon">🍼</span>
+        <div><div class="tip-title">哺乳室・換尿布台位置</div><div class="tip-body">FootTown（鐵塔商場）2F 設有哺乳室及換尿布台。淺草文化觀光中心（雷門正對面）亦設有育嬰設施。</div></div>
+      </div>
+
+      <div class="tip-card warn">
+        <span class="tip-icon">🌸</span>
+        <div><div class="tip-title">芝公園賞櫻人潮提醒</div><div class="tip-body">假日賞櫻季人潮眾多，推嬰兒車建議沿鋪裝步道行走，避免草坪不平坦路面。陰天人潮較少，光線柔和，拍照效果更佳。</div></div>
+      </div>
+
+      <div class="tip-card good">
+        <span class="tip-icon">🚃</span>
+        <div><div class="tip-title">嬰兒車上下電車技巧</div><div class="tip-body">都營地鐵各站均有電梯。搭乘時選靠近優先座位區域停放嬰兒車，下車前提早移動至門口，避免人潮擁擠。</div></div>
+      </div>
+
+      <div class="tip-card info">
+        <span class="tip-icon">🌡️</span>
+        <div><div class="tip-title">賞櫻季天氣準備</div><div class="tip-body">東京三月底至四月初早晚仍涼，日間約 12–18°C。請攜帶薄外套及嬰兒保暖毛毯。遇風大時花瓣飛舞雖美，但氣溫較低。</div></div>
+      </div>
+
+      <div class="tip-card warn">
+        <span class="tip-icon">🕐</span>
+        <div><div class="tip-title">仲見世商店營業時間</div><div class="tip-body">仲見世大多數店家 9:00–18:00 營業，部分店家提早打烊。建議 15:10 抵達後優先採購，勿拖延至太晚。</div></div>
+      </div>
+
+      <div class="tip-card good">
+        <span class="tip-icon">💳</span>
+        <div><div class="tip-title">Suica / PASMO IC 卡</div><div class="tip-body">強烈建議使用 IC 卡搭乘大眾運輸，自動扣款免找零。Apple Pay / Google Pay 均可綁定 Suica，手機感應即可乘車。</div></div>
+      </div>
+
+      <div class="tip-card info">
+        <span class="tip-icon">🛒</span>
+        <div><div class="tip-title">多慶屋購物提醒</div><div class="tip-body">多慶屋共 8 層，各樓層主題不同（藥妝、食品、玩具等）。退稅門檻為同日消費 ¥5,000 以上（稅前），記得攜帶護照。</div></div>
+      </div>
+
+      <div class="tip-card alert">
+        <span class="tip-icon">📍</span>
+        <div><div class="tip-title">緊急聯絡</div><div class="tip-body">警察 110 / 救護車・消防 119。附近兒科：聖路加國際醫院（月島）。出發前確認嬰兒健保卡及海外旅遊保險。</div></div>
+      </div>
+
+    </div>
+    <footer style="margin-top:1.5rem;"><span class="fs">🌸🌸🌸</span>親子東京鐵塔一日遊 · 祝旅途平安愉快<br/><span style="opacity:.55;">本手冊由 Claude AI 協助規劃製作</span></footer>
+  </div>
+
+  <!-- PAGE: 雨天備案 -->
+  <div class="page" id="page-rain">
+    <h2 class="page-title">🌂 雨天備案</h2>
+    <div class="sdiv"></div>
+
+    <!-- 備案選擇器 -->
+    <div class="rain-switcher">
+      <button class="rain-tab active" data-plan="a">🌦 備案 A<span class="rain-tab-sub">小雨・局部替換</span></button>
+      <button class="rain-tab" data-plan="b">🌧 備案 B<span class="rain-tab-sub">大雨・全日室內</span></button>
+    </div>
+
+    <!-- 備案 A -->
+    <div class="rain-plan active" id="plan-a">
+      <div class="rain-banner rain-banner-a">
+        <div class="rain-banner-icon">🌦</div>
+        <div>
+          <div class="rain-banner-title">備案 A｜只替換芝公園賞櫻</div>
+          <div class="rain-banner-desc">適合小雨或陣雨。東京鐵塔照去，僅將戶外賞櫻換成鄰近室內設施，其餘行程完全不變。</div>
+        </div>
+      </div>
+
+      <div class="rain-section-label">🗓 原行程不變的部分</div>
+      <div class="rain-keep-card">
+        <div class="rain-keep-row">✅ <span>08:30 出發 → 水天宮 → 人形町甘酒橫丁</span></div>
+        <div class="rain-keep-row">✅ <span>09:50 搭都營地鐵 → 東京鐵塔</span></div>
+        <div class="rain-keep-row">✅ <span>10:15 東京鐵塔 Main Deck（室內 ✓）</span></div>
+        <div class="rain-keep-row change">🔄 <span>11:15–13:05 芝公園 → 改為下方備案</span></div>
+        <div class="rain-keep-row">✅ <span>13:05 午餐 → 淺草 → 多慶屋 → 晚餐 → 入住</span></div>
+      </div>
+
+      <div class="rain-section-label">🔄 替換：11:15–13:05 改為</div>
+      <div class="tl-card" style="margin-bottom:.9rem;">
+        <div class="tl-head"><span class="tl-emoji">🏙️</span><div class="tl-name">麻布台 Hills</div></div>
+        <p class="tl-note">從東京鐵塔步行約 10 分鐘，2023 年底新開的大型室內商業設施。超寬敞室內廣場讓寶寶自由活動，設施全新，哺乳室完善，嬰兒車全程友善。有咖啡廳、超市、親子空間，消磨 1–2 小時輕鬆愉快。午餐也可直接在此解決。</p>
+        <div class="tags">
+          <span class="tag blue">步行 10 分</span>
+          <span class="tag green">哺乳室 ✓</span>
+          <span class="tag green">嬰兒車 ✓</span>
+          <span class="tag plain">免費入場</span>
+        </div>
+      </div>
+
+      <div class="rain-tip">
+        <span>💡</span>
+        <span>備案 A 移動量幾乎不增加，體力消耗最低，是小雨天的首選。東京鐵塔觀景台在雨天有時反而雲霧繚繞，景色獨特！</span>
+      </div>
+    </div>
+
+    <!-- 備案 B -->
+    <div class="rain-plan" id="plan-b">
+      <div class="rain-banner rain-banner-b">
+        <div class="rain-banner-icon">🌧</div>
+        <div>
+          <div class="rain-banner-title">備案 B｜全日室內路線</div>
+          <div class="rain-banner-desc">適合整天大雨。出發與終點飯店不變，全程在室內設施活動，嬰兒車友善。</div>
+        </div>
+      </div>
+
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-time">08:30<br/>出發</div>
+          <div class="tl-dot hi"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🏨</span><div class="tl-name">Route-Inn Asakusabashi 出發</div></div>
+            <p class="tl-note">同原行程出發，雨天記得帶嬰兒車雨罩。</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">08:50<br/>–09:15</div>
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">⛩️</span><div class="tl-name">水天宮</div></div>
+            <p class="tl-note">雨天仍可參拜，境內有屋簷遮蔽，短暫停留問題不大。</p>
+            <div class="tags"><span class="tag gold">約 20 分</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">09:15<br/>–09:50</div>
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🏮</span><div class="tl-name">人形町・甘酒橫丁</div></div>
+            <p class="tl-note">騎樓式老街，小雨完全不受影響，正常嚐點心。</p>
+            <div class="tags"><span class="tag gold">約 35 分</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">09:50<br/>–10:30</div>
+          <div class="tl-dot go"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🚃</span><div class="tl-name">搭都營大江戶線 → 六本木</div></div>
+            <p class="tl-note">人形町站 → 大門站 → 六本木站，全程約 30 分鐘。各站有電梯。</p>
+            <div class="tags"><span class="tag blue">約 30 分</span><span class="tag plain">¥220 / 人</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">10:30<br/>–12:30</div>
+          <div class="tl-dot hi"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🏙️</span><div class="tl-name">六本木 Hills / 森美術館</div></div>
+            <p class="tl-note">室內大型商業設施，53F 森美術館有大型裝置藝術，孩子視覺刺激豐富。商場內嬰兒車友善，哺乳室完備。可依孩子狀況選擇逛商場或參觀展覽。</p>
+            <div class="tags">
+              <span class="tag">主要景點 🌟</span>
+              <span class="tag green">哺乳室 ✓</span>
+              <span class="tag plain">展覽費另計</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">12:30<br/>–13:30</div>
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🍱</span><div class="tl-name">六本木 Hills 午餐</div></div>
+            <p class="tl-note">商場內選擇多元，有多間兒童友善餐廳，全程不用淋雨。</p>
+            <div class="tags"><span class="tag green">哺乳室 ✓</span><span class="tag green">換尿布 ✓</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">13:30<br/>–14:10</div>
+          <div class="tl-dot go"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🚃</span><div class="tl-name">搭地鐵 → 上野</div></div>
+            <p class="tl-note">六本木站（大江戶線）→ 上野御徒町站，約 25 分鐘。</p>
+            <div class="tags"><span class="tag blue">約 25 分</span><span class="tag plain">¥220 / 人</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">14:10<br/>–16:00</div>
+          <div class="tl-dot hi"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🦕</span><div class="tl-name">国立科学博物館</div></div>
+            <p class="tl-note">上野恩賜公園內，恐龍化石、動物標本、宇宙展覽一應俱全。2 歲孩子對大型恐龍骨架反應熱烈！嬰兒車可租借，全館無障礙動線完善。且就在終點飯店旁，非常省力。</p>
+            <div class="tags">
+              <span class="tag">親子推薦 ⭐</span>
+              <span class="tag plain">成人 ¥630</span>
+              <span class="tag green">嬰兒免費</span>
+              <span class="tag green">嬰兒車可借</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">16:00<br/>–17:30</div>
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🛒</span><div class="tl-name">多慶屋（御徒町）</div></div>
+            <p class="tl-note">科博館步行 5 分鐘即達。藥妝、玩具、食品，全室內購物，雨天正合適。</p>
+            <div class="tags"><span class="tag gold">約 90 分</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">17:30<br/>–19:00</div>
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🍽️</span><div class="tl-name">上野・御徒町周邊晚餐</div></div>
+            <p class="tl-note">多慶屋附近餐廳選擇豐富，可依孩子狀況選擇輕鬆用餐環境。</p>
+            <div class="tags"><span class="tag gold">約 90 分</span></div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-time">19:00<br/>→ 20:30</div>
+          <div class="tl-dot hi"></div>
+          <div class="tl-card">
+            <div class="tl-head"><span class="tl-emoji">🏨</span><div class="tl-name">Candeo Hotels Ueno Koen</div></div>
+            <p class="tl-note">步行約 10 分鐘或計程車 5 分鐘抵達。全日室內行程，大人孩子都輕鬆到達！</p>
+            <div class="tags"><span class="tag">抵達入住 🎉</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="rain-tip">
+        <span>💡</span>
+        <span>備案 B 省去東京鐵塔，改以六本木 Hills 與科博館為主軸，兩處均為頂級嬰兒車友善設施，全日幾乎不淋雨。</span>
+      </div>
+    </div>
+
+    <!-- 比較表 -->
+    <div class="rain-compare">
+      <div class="rain-compare-title">📊 兩個備案快速比較</div>
+      <div class="rain-compare-row rain-compare-head">
+        <span></span><span>備案 A</span><span>備案 B</span>
+      </div>
+      <div class="rain-compare-row">
+        <span>適合情況</span><span>小雨・陣雨</span><span>整天大雨</span>
+      </div>
+      <div class="rain-compare-row">
+        <span>保留鐵塔</span><span>✅ 保留</span><span>❌ 省略</span>
+      </div>
+      <div class="rain-compare-row">
+        <span>移動量</span><span>幾乎不變</span><span>稍多</span>
+      </div>
+      <div class="rain-compare-row">
+        <span>體力消耗</span><span>輕鬆</span><span>中等</span>
+      </div>
+      <div class="rain-compare-row">
+        <span>嬰兒車</span><span>⭐⭐⭐⭐⭐</span><span>⭐⭐⭐⭐</span>
+      </div>
+    </div>
+
+    <footer style="margin-top:1.5rem;"><span class="fs">🌂</span>晴天賞櫻、雨天也精彩！<br/><span style="opacity:.55;">本手冊由 Claude AI 協助規劃製作</span></footer>
+  </div>
+
+</div>
+
+<!-- TAB BAR -->
+<nav id="tab-bar">
+  <button class="tab-btn active" data-page="itinerary"><span class="ti">🗓</span>行程</button>
+  <button class="tab-btn" data-page="transport"><span class="ti">🚃</span>交通</button>
+  <button class="tab-btn" data-page="cost"><span class="ti">💴</span>費用</button>
+  <button class="tab-btn" data-page="tips"><span class="ti">📋</span>提醒</button>
+  <button class="tab-btn" data-page="rain"><span class="ti">🌂</span>雨天</button>
+</nav>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const pages = document.querySelectorAll('.page');
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = btn.dataset.page;
+      tabs.forEach(b => b.classList.remove('active'));
+      pages.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('page-' + t).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+
+  // Rain plan switcher
+  const rainTabs = document.querySelectorAll('.rain-tab');
+  const rainPlans = document.querySelectorAll('.rain-plan');
+  rainTabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.plan;
+      rainTabs.forEach(b => b.classList.remove('active'));
+      rainPlans.forEach(pl => pl.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('plan-' + p).classList.add('active');
+    });
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
+  }
+</script>
+</body>
+</html>
